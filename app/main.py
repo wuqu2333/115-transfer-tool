@@ -133,6 +133,14 @@ def index() -> FileResponse:
 
 
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+# 前端构建产物使用绝对路径 /assets /vite.svg，单独挂载便于直接访问
+if (STATIC_DIR / "assets").exists():
+    app.mount("/assets", StaticFiles(directory=STATIC_DIR / "assets"), name="assets")
+
+
+@app.get("/vite.svg", include_in_schema=False)
+def vite_asset() -> FileResponse:
+    return FileResponse(STATIC_DIR / "vite.svg")
 
 
 @app.get("/api/health")
